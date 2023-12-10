@@ -1,23 +1,27 @@
-import logo from './logo.svg';
 import './App.css';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { getWeatherForecast } from 'services/auth';
+import { useEffect } from 'react';
+
+const localizer = momentLocalizer(moment);
 
 function App() {
+
+  useEffect(() => {
+    getWeatherForecast().then((data) => {
+      console.log(data);
+    }
+    );
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Calendar 
+        localizer={localizer}
+        style={{height: 500}}
+      />
     </div>
   );
 }
