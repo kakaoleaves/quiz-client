@@ -1,27 +1,26 @@
-import './App.css';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
-import moment from 'moment';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { getWeatherForecast } from 'services/auth';
-import { useEffect } from 'react';
-
-const localizer = momentLocalizer(moment);
+import React from "react";
+import Footer from "components/Footer/Footer";
+import "./App.css";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import LoginPage from "views/Login/LoginPage";
+import NotFoundPage from "views/NotFound/NotFoundPage";
+import Header from "components/Header/Header";
+import UserDashboard from "views/Admin/UserDashboard/UserDashboard";
+import RegisterPage from "views/Register/RegisterPage";
 
 function App() {
-
-  useEffect(() => {
-    getWeatherForecast().then((data) => {
-      console.log(data);
-    }
-    );
-  }, []);
-
   return (
     <div className="App">
-      <Calendar 
-        localizer={localizer}
-        style={{height: 500}}
-      />
+      <Header />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<UserDashboard />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </BrowserRouter>
+      <Footer />
     </div>
   );
 }
