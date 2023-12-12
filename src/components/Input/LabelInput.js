@@ -5,22 +5,20 @@ export default function LabelInput({
   label,
   id,
   register,
-  required = false,
   type = "text",
-  min = 0,
-  max = 100,
-  pattern = null,
+  options,
+  errors,
   ...rest
 }) {
   return (
     <div className="label-input">
       <label htmlFor={id}>{label}</label>
-      <input
-        type={type}
-        id={id}
-        {...register(id, { required, min, max, pattern })}
-        {...rest}
-      />
+      <input type={type} id={id} {...register(id, { ...options })} {...rest} />
+      {errors && (
+        <span role="alert" className="error">
+          {errors.message}
+        </span>
+      )}
     </div>
   );
 }

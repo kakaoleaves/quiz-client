@@ -13,6 +13,10 @@ code {
     monospace;
 }
 
+button {
+  cursor: pointer;
+}
+
 .page {
   box-sizing: border-box;
   margin: 0 auto;
@@ -23,8 +27,37 @@ code {
 
 .submit {
   width: 100%;
-  background-color: #008cba;
+  background-color: rgb(1, 69, 37);
   color: white;
   border: none;
   padding: 8px 12px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead {
+    tr {
+      border-bottom: 1px solid #e6e6e6;
+    }
+
+    th {
+      padding: 8px 12px;
+      text-align: left;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid #e6e6e6;
+    }
+
+    td {
+      padding: 8px 12px;
+    }
+    td:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+  }
 }

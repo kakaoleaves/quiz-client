@@ -17,4 +17,9 @@
         margin: 5px 0;
         padding: 8px 12px;
     }
+
+    .error {
+        color: red;
+        font-size: 12px;
+    }
 }

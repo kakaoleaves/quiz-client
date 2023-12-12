@@ -3,9 +3,14 @@ import LabelInput from "components/Input/LabelInput";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { login } from "services/auth";
+import { usernameRegex, passwordRegex } from "utils/regex";
 
 export default function LoginPage() {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm();
 
   const onSubmit = async (data) => {
     try {
@@ -26,16 +31,25 @@ export default function LoginPage() {
           label="Username"
           id="username"
           register={register}
-          required
+          options={{
+            required: "Enter your username",
+            pattern: { ...usernameRegex },
+          }}
+          aria-invalid={errors.username ? "true" : "false"}
           autoComplete="username"
+          errors={errors?.username}
         />
         <LabelInput
           label="Password"
           id="password"
           register={register}
-          required
+          options={{
+            required: true,
+            pattern: { ...passwordRegex },
+          }}
           type="password"
           autoComplete="current-password"
+          errors={errors?.password}
         />
         <Button type="submit" text="Login" className="submit" />
       </form>
