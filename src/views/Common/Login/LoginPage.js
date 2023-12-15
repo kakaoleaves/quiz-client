@@ -1,7 +1,9 @@
 import Button from "components/Button/Button";
 import LabelInput from "components/Input/LabelInput";
-import React from "react";
+import { UserContext } from "contexts/userContext";
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 import { login } from "services/auth";
 import { usernameRegex, passwordRegex } from "utils/regex";
 
@@ -11,20 +13,24 @@ export default function LoginPage() {
     formState: { errors },
     handleSubmit,
   } = useForm();
+  const navigate = useNavigate();
+
+  const { setUser } = useContext(UserContext);
 
   const onSubmit = async (data) => {
     try {
       const response = await login(data.username, data.password);
       if (response) {
-        console.log(response);
+        setUser(response);
+        localStorage.setItem("user", JSON.stringify(response));
         if (response?.isAdmin) {
-          window.location.href = "/admin/user";
+          navigate("/admin/user");
         } else {
-          window.location.href = "/client/info";
+          navigate("/client/info");
         }
       }
     } catch (error) {
-      alert(error.response.data);
+      alert(error.message ?? error.response.data);
     }
   };
 

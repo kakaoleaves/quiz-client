@@ -1,20 +1,159 @@
-import React, { useEffect, useState } from "react";
-import { getQuiz } from "services/quiz";
+import React, { useContext, useEffect, useState } from "react";
+import { createQuiz, editQuiz, getQuiz } from "services/quiz";
 import Modal from "react-modal";
+import Button from "components/Button/Button";
+import LabelInput from "components/Input/LabelInput";
+import { useForm } from "react-hook-form";
+import { UserContext } from "contexts/userContext";
+
+Modal.setAppElement("#root");
 
 export default function QuizDashboard() {
   const [quizList, setQuizList] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedQuiz, setSelectedQuiz] = useState(null);
 
   const getQuizList = async () => {
     const data = await getQuiz();
     setQuizList(data);
   };
 
-  console.log(quizList);
-
   useEffect(() => {
     getQuizList();
   }, []);
+
+  const { user } = useContext(UserContext);
+
+  const {
+    register,
+    setValue,
+    watch,
+    reset,
+    formState: { errors },
+    handleSubmit,
+  } = useForm();
+
+  const onClickRow = (quiz) => {
+    setModalOpen(true);
+    setSelectedQuiz(quiz);
+    setValue("question", quiz.content);
+    setValue("choice1", quiz.choices[0].content);
+    setValue("choice2", quiz.choices[1].content);
+    setValue("choice3", quiz.choices[2].content);
+    setValue("choice4", quiz.choices[3].content);
+    setValue(
+      "answer",
+      (quiz.choices.findIndex((choice) => choice.isCorrect) + 1).toString(),
+    );
+  };
+
+  const onSubmit = async () => {
+    try {
+      if (selectedQuiz) {
+        // edit
+        const res = await editQuiz(selectedQuiz.questionId, {
+          content: watch("question"),
+          choices: [
+            {
+              choiceId: selectedQuiz.choices[0].choiceId,
+              content: watch("choice1"),
+              isCorrect: watch("answer") === "1",
+            },
+            {
+              choiceId: selectedQuiz.choices[1].choiceId,
+              content: watch("choice2"),
+              isCorrect: watch("answer") === "2",
+            },
+            {
+              choiceId: selectedQuiz.choices[2].choiceId,
+              content: watch("choice3"),
+              isCorrect: watch("answer") === "3",
+            },
+            {
+              choiceId: selectedQuiz.choices[3].choiceId,
+              content: watch("choice4"),
+              isCorrect: watch("answer") === "4",
+            },
+          ],
+        });
+        if (res) {
+          window.alert("Quiz updated successfully.");
+          setQuizList((prev) =>
+            prev.map((quiz) =>
+              quiz.questionId === selectedQuiz.questionId ? res : quiz,
+            ),
+          );
+          setModalOpen(false);
+        }
+      } else {
+        // create
+        const res = await createQuiz({
+          content: watch("question"),
+          choices: [
+            {
+              content: watch("choice1"),
+              isCorrect: watch("answer") === "1",
+            },
+            {
+              content: watch("choice2"),
+              isCorrect: watch("answer") === "2",
+            },
+            {
+              content: watch("choice3"),
+              isCorrect: watch("answer") === "3",
+            },
+            {
+              content: watch("choice4"),
+              isCorrect: watch("answer") === "4",
+            },
+          ],
+          createdBy: user.userId,
+        });
+        if (res) {
+          window.alert("Quiz created successfully.");
+          setQuizList((prev) => [...prev, res]);
+          setModalOpen(false);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      window.alert(error.response?.data);
+    }
+  };
+
+  const onDelete = async () => {};
+
+  const createDisabled =
+    !watch("question") ||
+    !watch("choice1") ||
+    !watch("choice2") ||
+    !watch("choice3") ||
+    !watch("choice4") ||
+    !watch("answer");
+
+  const modifyDisabled =
+    !watch("question") ||
+    !watch("choice1") ||
+    !watch("choice2") ||
+    !watch("choice3") ||
+    !watch("choice4") ||
+    !watch("answer") ||
+    (watch("question") === selectedQuiz?.content &&
+      watch("choice1") === selectedQuiz?.choices[0].content &&
+      watch("choice2") === selectedQuiz?.choices[1].content &&
+      watch("choice3") === selectedQuiz?.choices[2].content &&
+      watch("choice4") === selectedQuiz?.choices[3].content &&
+      watch("answer") ===
+        (
+          selectedQuiz?.choices.findIndex((choice) => choice.isCorrect) + 1
+        ).toString());
+
+  useEffect(() => {
+    if (!modalOpen) {
+      setSelectedQuiz(null);
+      reset();
+    }
+  }, [modalOpen]);
 
   return (
     <div className="page">
@@ -29,11 +168,17 @@ export default function QuizDashboard() {
           </tr>
         </thead>
         <tbody>
+          {quizList.length === 0 && (
+            <tr>
+              <td colSpan={3}>No quiz found.</td>
+            </tr>
+          )}
           {quizList.map((quiz) => (
             <tr
+              className="clickable-row"
               key={quiz?.questionId}
               onClick={() => {
-                window.location.href = `/admin/quiz/${quiz?.questionId}`;
+                onClickRow(quiz);
               }}
             >
               <td>{quiz?.content}</td>
@@ -43,21 +188,139 @@ export default function QuizDashboard() {
           ))}
         </tbody>
       </table>
-      <Modal isOpen={true}>
+      <div className="create-btn-wrap">
+        <Button
+          className="create"
+          text="Create Quiz"
+          onClick={() => setModalOpen(true)}
+        />
+      </div>
+      <Modal
+        isOpen={modalOpen}
+        className="modal"
+        overlayClassName="modal-overlay"
+        onRequestClose={() => setModalOpen(false)}
+        shouldCloseOnEsc
+      >
         <h2>Quiz Detail</h2>
-        <form>
-          <label htmlFor="question">Question</label>
-          <textarea id="question" />
-          <label htmlFor="answer">Answer</label>
-          <textarea id="answer" />
-          <label htmlFor="option1">Option 1</label>
-          <textarea id="option1" />
-          <label htmlFor="option2">Option 2</label>
-          <textarea id="option2" />
-          <label htmlFor="option3">Option 3</label>
-          <textarea id="option3" />
-          <label htmlFor="option4">Option 4</label>
-          <textarea id="option4" />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <LabelInput
+            label="Question"
+            id="question"
+            register={register}
+            options={{
+              required: "Enter the quiz content",
+              maxLength: { value: 100, message: "Max length is 100" },
+            }}
+            aria-invalid={errors.question ? "true" : "false"}
+          />
+          <div className="label-input">
+            <div>Choices</div>
+            <div className="choice">
+              <input
+                type="radio"
+                className="choice-radio"
+                name="answer"
+                value="1"
+                {...register("answer", {
+                  required: "Choose the answer",
+                })}
+              />
+              <input
+                className="choice-input"
+                type="text"
+                name="choice1"
+                {...register("choice1", {
+                  required: "Enter the choice content",
+                  maxLength: { value: 100, message: "Max length is 100" },
+                })}
+              />
+            </div>
+            <div className="choice">
+              <input
+                type="radio"
+                className="choice-radio"
+                name="answer"
+                value="2"
+                {...register("answer", {
+                  required: "Choose the answer",
+                })}
+              />
+              <input
+                className="choice-input"
+                type="text"
+                name="choice2"
+                {...register("choice2", {
+                  required: "Enter the choice content",
+                  maxLength: { value: 100, message: "Max length is 100" },
+                })}
+              />
+            </div>
+            <div className="choice">
+              <input
+                type="radio"
+                className="choice-radio"
+                name="answer"
+                value="3"
+                {...register("answer", {
+                  required: "Choose the answer",
+                })}
+              />
+              <input
+                className="choice-input"
+                type="text"
+                name="choice3"
+                {...register("choice3", {
+                  required: "Enter the choice content",
+                  maxLength: { value: 100, message: "Max length is 100" },
+                })}
+              />
+            </div>
+            <div className="choice">
+              <input
+                type="radio"
+                className="choice-radio"
+                name="answer"
+                value="4"
+                {...register("answer", {
+                  required: "Choose the answer",
+                })}
+              />
+              <input
+                className="choice-input"
+                type="text"
+                name="choice4"
+                {...register("choice4", {
+                  required: "Enter the choice content",
+                  maxLength: { value: 100, message: "Max length is 100" },
+                })}
+              />
+            </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Button
+              type="submit"
+              text="Save"
+              className="submit"
+              disabled={selectedQuiz ? modifyDisabled : createDisabled}
+            />
+            {selectedQuiz && (
+              <Button
+                style={{ marginLeft: "15px" }}
+                type="button"
+                text="Delete"
+                className="delete"
+                onClick={onDelete}
+              />
+            )}
+          </div>
         </form>
       </Modal>
     </div>

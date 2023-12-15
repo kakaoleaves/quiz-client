@@ -45,6 +45,7 @@ footer {
   padding: 20px;
   background-color: #222;
   color: #fff;  
+  text-align: center;
 }
 
 button {
@@ -53,33 +54,6 @@ button {
 
 button:disabled {
   cursor: default;
-}
-
-.page {
-  box-sizing: border-box;
-  margin: 0 auto;
-  max-width: 1000px;
-  padding: 20px;
-  min-height: calc(100vh - 130px);
-}
-
-.submit, .delete {
-  width: 100%;
-  color: white;
-  border: none;
-  padding: 12px;
-
-  &:disabled {
-    background-color: #ccc;
-  }
-}
-
-.submit {
-  background-color: rgb(1, 69, 37);
-}
-
-.delete {
-  background-color: #d9534f;
 }
 
 table {
@@ -99,6 +73,11 @@ table {
   }
 
   tbody {
+
+    .clickable-row {
+      cursor: pointer;
+    }
+
     tr {
       border-bottom: 1px solid #e6e6e6;
     }
@@ -140,6 +119,45 @@ table {
   }
 }
 
+.page {
+  box-sizing: border-box;
+  margin: 0 auto;
+  max-width: 1000px;
+  padding: 20px;
+  min-height: calc(100vh - 130px);
+
+  h1, p {
+    text-align: center;
+  }
+}
+
+.submit, .delete {
+  width: 100%;
+  color: white;
+  border: none;
+  padding: 12px;
+
+  &:disabled {
+    background-color: #ccc;
+  }
+}
+
+.submit {
+  background-color: rgb(1, 69, 37);
+}
+
+.delete {
+  background-color: #d9534f;
+}
+
+.create {
+  background-color: rgb(1, 69, 37);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 12px;
+}
+
 .dashboard {
   margin-top: 20px;
 }
@@ -164,4 +182,26 @@ table {
   width: 80%;
   height: 80%;
   padding: 40px;
+  overflow-y: auto;
+}
+
+.create-btn-wrap {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.choice {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .choice-radio {
+    width: 20px;
+  }
+
+  .choice-input {
+    flex: 1;
+    margin-left: 10px;
+  }
 }
