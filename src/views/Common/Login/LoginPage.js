@@ -16,8 +16,12 @@ export default function LoginPage() {
     try {
       const response = await login(data.username, data.password);
       if (response) {
-        localStorage.setItem("user", JSON.stringify(response));
-        window.location.href = "/client";
+        console.log(response);
+        if (response?.isAdmin) {
+          window.location.href = "/admin/user";
+        } else {
+          window.location.href = "/client/info";
+        }
       }
     } catch (error) {
       alert(error.response.data);

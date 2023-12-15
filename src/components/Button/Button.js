@@ -5,10 +5,12 @@ export default function Button({
   text = "Submit",
   onClick = () => {},
   className = "",
+  style = {},
   disabled = false,
 }) {
   return (
     <button
+      style={style}
       type={type}
       className={`button ${className}`}
       onClick={onClick}

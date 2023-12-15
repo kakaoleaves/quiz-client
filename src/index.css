@@ -13,8 +13,46 @@ code {
     monospace;
 }
 
+header {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-bottom: 1px solid #e6e6e6;
+  height: 70px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  text-align: left;
+  color: rgb(1, 69, 37)
+}
+
+header .header-content {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+footer {
+  box-sizing: border-box;
+  height: 60px;
+  padding: 20px;
+  background-color: #222;
+  color: #fff;  
+}
+
 button {
   cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
 }
 
 .page {
@@ -25,12 +63,23 @@ button {
   min-height: calc(100vh - 130px);
 }
 
-.submit {
+.submit, .delete {
   width: 100%;
-  background-color: rgb(1, 69, 37);
   color: white;
   border: none;
-  padding: 8px 12px;
+  padding: 12px;
+
+  &:disabled {
+    background-color: #ccc;
+  }
+}
+
+.submit {
+  background-color: rgb(1, 69, 37);
+}
+
+.delete {
+  background-color: #d9534f;
 }
 
 table {
@@ -40,11 +89,12 @@ table {
   thead {
     tr {
       border-bottom: 1px solid #e6e6e6;
+      background-color: #014525;
+      color: white;
     }
 
     th {
       padding: 8px 12px;
-      text-align: left;
     }
   }
 
@@ -53,11 +103,65 @@ table {
       border-bottom: 1px solid #e6e6e6;
     }
 
-    td {
-      padding: 8px 12px;
-    }
-    td:nth-child(even) {
+    tr:nth-child(even) {
       background-color: #f2f2f2;
     }
+
+    td {
+      padding: 8px 12px;
+      text-align: center;
+    }
   }
+}
+
+.label-input {
+  margin-bottom: 10px;
+
+  label, input {
+      display: block;
+  }
+
+  label {
+      text-align: left;
+  }
+
+  input {
+      border: 1px solid #e6e6e6;
+      border-radius: 3px;
+      box-sizing: border-box;
+      width: 100%;
+      margin: 5px 0;
+      padding: 8px 12px;
+  }
+
+  .error {
+      color: red;
+      font-size: 12px;
+  }
+}
+
+.dashboard {
+  margin-top: 20px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  box-sizing: border-box;
+  background-color: white;
+  width: 80%;
+  height: 80%;
+  padding: 40px;
 }

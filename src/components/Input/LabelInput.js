@@ -1,5 +1,4 @@
 import React from "react";
-import "./LabelInput.css";
 
 export default function LabelInput({
   label,
