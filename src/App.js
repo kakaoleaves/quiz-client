@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from "react";
-import Footer from "components/Footer/Footer";
+import Footer from "components/Footer";
 import "./App.css";
 import {
   BrowserRouter,
@@ -10,12 +10,11 @@ import {
 } from "react-router-dom";
 import LoginPage from "views/Common/Login/LoginPage";
 import NotFoundPage from "views/Common/NotFound/NotFoundPage";
-import Header from "components/Header/Header";
+import Header from "components/Header";
 import UserDashboard from "views/Admin/UserDashboard/UserDashboard";
 import RegisterPage from "views/Common/Register/RegisterPage";
 import QuizDashboard from "views/Admin/QuizDashboard/QuizDashboard";
-import Quiz from "views/Client/Quiz/Quiz";
-import ClientInfo from "views/Client/Main/ClientInfo";
+import ClientPage from "views/Client/ClientPage";
 import { UserContext } from "contexts/userContext";
 
 function LoginManager() {
@@ -38,11 +37,23 @@ function LoginManager() {
         if (user.isAdmin) {
           navigate("/admin/user");
         } else {
-          navigate("/client/info");
+          navigate("/client");
         }
       }
     }
   }, [user, location.pathname, navigate]);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (
+      !user &&
+      (location.pathname.includes("/admin") ||
+        location.pathname.includes("/client"))
+    ) {
+      window.alert("You need to login to access this page!");
+      navigate("/");
+    }
+  }, []);
 
   return <Fragment />;
 }
@@ -53,8 +64,8 @@ function App() {
   return (
     <div id="root">
       <UserContext.Provider value={{ user, setUser }}>
-        <Header />
         <BrowserRouter>
+          <Header />
           <LoginManager />
           <Routes>
             <Route path="/" element={<LoginPage />} />
@@ -66,16 +77,15 @@ function App() {
                 <Route path="/admin/quiz" element={<QuizDashboard />} />
               </>
             )}
-            {user?.isClient && (
+            {user && !user?.isAdmin && (
               <>
-                <Route path="/client/info" element={<ClientInfo />} />
-                <Route path="/client/quiz" element={<Quiz />} />
+                <Route path="/client" element={<ClientPage />} />
               </>
             )}
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
+          <Footer />
         </BrowserRouter>
-        <Footer />
       </UserContext.Provider>
     </div>
   );

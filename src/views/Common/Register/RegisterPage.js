@@ -1,9 +1,11 @@
-import Button from "components/Button/Button";
-import LabelInput from "components/Input/LabelInput";
+import Button from "components/Button";
+import LabelInput from "components/LabelInput";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { usernameRegex, passwordRegex } from "utils/regex";
 import { signup } from "services/auth";
+import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 
 export default function RegisterPage() {
   const {
@@ -12,6 +14,7 @@ export default function RegisterPage() {
     formState: { errors },
     handleSubmit,
   } = useForm();
+  const navigate = useNavigate();
 
   const password = watch("password");
 
@@ -23,9 +26,10 @@ export default function RegisterPage() {
       });
       if (response) {
         window.alert("Account created successfully!");
+        navigate("/");
       }
     } catch (error) {
-      alert(error.response?.data);
+      alert(error?.response?.data);
     }
   };
 
@@ -33,6 +37,7 @@ export default function RegisterPage() {
 
   return (
     <div className="page">
+      <h1>Register</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <LabelInput
           label="Username"
@@ -73,6 +78,9 @@ export default function RegisterPage() {
         />
         <Button type="submit" text="Register" className="submit" />
       </form>
+      <p>
+        Already have an account?<Link to="/">Login</Link>
+      </p>
     </div>
   );
 }

@@ -1,9 +1,10 @@
-import Button from "components/Button/Button";
-import LabelInput from "components/Input/LabelInput";
+import Button from "components/Button";
+import LabelInput from "components/LabelInput";
 import { UserContext } from "contexts/userContext";
 import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import { login } from "services/auth";
 import { usernameRegex, passwordRegex } from "utils/regex";
 
@@ -26,16 +27,18 @@ export default function LoginPage() {
         if (response?.isAdmin) {
           navigate("/admin/user");
         } else {
-          navigate("/client/info");
+          navigate("/client");
         }
       }
     } catch (error) {
-      alert(error.message ?? error.response.data);
+      console.error(error);
+      alert(error?.response?.data);
     }
   };
 
   return (
     <div className="page">
+      <h1>Login</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <LabelInput
           label="Username"
@@ -64,7 +67,7 @@ export default function LoginPage() {
         <Button type="submit" text="Login" className="submit" />
       </form>
       <p>
-        Don&apos;t have an account? <a href="/register">Register</a>
+        Don&apos;t have an account?<Link to="/register">Register</Link>
       </p>
     </div>
   );

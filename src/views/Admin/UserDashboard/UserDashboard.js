@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Modal from "react-modal";
 import { deleteUser, editUser, getUsers } from "services/user";
-import LabelInput from "components/Input/LabelInput";
+import LabelInput from "components/LabelInput";
 import { usernameRegex, passwordRegex } from "utils/regex";
-import Button from "components/Button/Button";
+import Button from "components/Button";
 
 Modal.setAppElement("#root");
 
@@ -58,7 +58,7 @@ export default function UserDashboard() {
       );
       setSelectedUser(null);
     } catch (error) {
-      alert(error.response?.data);
+      alert(error?.response?.data);
     }
   };
 
@@ -79,7 +79,7 @@ export default function UserDashboard() {
       setSelectedUser(null);
     } catch (error) {
       console.error(error);
-      alert(error.response?.data);
+      alert(error?.response?.data);
     }
   };
 
@@ -97,7 +97,11 @@ export default function UserDashboard() {
         </thead>
         <tbody>
           {userList.map((user) => (
-            <tr key={user.userId} onClick={() => onClickRow(user)}>
+            <tr
+              className="clickable-row"
+              key={user.userId}
+              onClick={() => onClickRow(user)}
+            >
               <td>{user.username}</td>
               <td>{user.password}</td>
               <td>{user.isAdmin ? "Admin" : "User"}</td>

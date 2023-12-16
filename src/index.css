@@ -25,18 +25,56 @@ header {
   top: 0;
   z-index: 1;
   text-align: left;
-  color: rgb(1, 69, 37)
+  color: rgb(1, 69, 37);
+
+  .header-content {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  button {
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+
+  .logout {
+    width: 20px;
+    object-fit: contain;
+  }
+
+  .header-user-info {
+    margin-right: 10px;
+    @media screen and (max-width: 600px) {
+      display: none;    
+    }
+  }
 }
 
-header .header-content {
+nav {
+  margin-left: 30px;
+
+  @media screen and (max-width: 600px) {
+    margin-left: 10px;
+  }
+}
+
+a {
+  display: inline-block;
   box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 20px;
+  width: 60px;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 footer {
@@ -122,6 +160,7 @@ table {
 .page {
   box-sizing: border-box;
   margin: 0 auto;
+  min-width: 320px;
   max-width: 1000px;
   padding: 20px;
   min-height: calc(100vh - 130px);
@@ -150,12 +189,16 @@ table {
   background-color: #d9534f;
 }
 
-.create {
+.default {
   background-color: rgb(1, 69, 37);
   color: white;
   border: none;
   border-radius: 5px;
   padding: 12px;
+
+  &:disabled {
+    background-color: #ccc;
+  }
 }
 
 .dashboard {
@@ -180,12 +223,13 @@ table {
   box-sizing: border-box;
   background-color: white;
   width: 80%;
+  max-width: 1000px;
   height: 80%;
   padding: 40px;
   overflow-y: auto;
 }
 
-.create-btn-wrap {
+.end-btn-wrap {
   display: flex;
   justify-content: flex-end;
   margin-top: 20px;
@@ -204,4 +248,79 @@ table {
     flex: 1;
     margin-left: 10px;
   }
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.answer-box {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 2px 0 0;
+  padding: 10px 10px 10px 40px;
+  background-color: #E7E9EB;
+  cursor: pointer;
+  word-wrap: break-word;
+  border: none;
+  text-align: left;
+
+  label {
+    cursor: pointer;
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 11px;
+    left: 12px;
+    height: 15px;
+    width: 15px;
+    margin: 0;
+    background-color: #fff;
+  }
+
+  &:hover {
+    background-color: #ddd;
+  }
+
+  &.selected {
+    background-color: #ddd;
+  }
+
+  &:disabled {
+    cursor: default;
+    color: black;   
+
+    > * {
+      cursor: default;
+    }
+
+    &.answer-correct {
+      background-color: #5cb85c;
+      color: white;
+    }
+
+    &.answer-incorrect {
+      background-color: #d9534f;
+      color: white;
+    }
+  }
+}
+
+.unanswered, .correct, .incorrect {
+  font-weight: 500;
+}
+
+.unanswered {
+  color: gray;
+}
+
+.correct { 
+  color: #5cb85c;
+}
+
+.incorrect {
+  color: #d9534f;
 }

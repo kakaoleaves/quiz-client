@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { createQuiz, editQuiz, getQuiz } from "services/quiz";
+import { createQuiz, deleteQuiz, editQuiz, getQuiz } from "services/quiz";
 import Modal from "react-modal";
-import Button from "components/Button/Button";
-import LabelInput from "components/Input/LabelInput";
+import Button from "components/Button";
+import LabelInput from "components/LabelInput";
 import { useForm } from "react-hook-form";
 import { UserContext } from "contexts/userContext";
 
@@ -116,12 +116,29 @@ export default function QuizDashboard() {
         }
       }
     } catch (error) {
-      console.log(error);
-      window.alert(error.response?.data);
+      alert(error?.response?.data);
     }
   };
 
-  const onDelete = async () => {};
+  const onDelete = async () => {
+    const confirm = window.confirm(
+      "Are you sure you want to delete this quiz?",
+    );
+    if (!confirm) return;
+
+    try {
+      const res = await deleteQuiz(selectedQuiz.questionId);
+      if (res) {
+        window.alert("Quiz deleted successfully.");
+        setQuizList((prev) =>
+          prev.filter((quiz) => quiz.questionId !== selectedQuiz.questionId),
+        );
+        setModalOpen(false);
+      }
+    } catch (error) {
+      alert(error?.response?.data);
+    }
+  };
 
   const createDisabled =
     !watch("question") ||
@@ -158,13 +175,13 @@ export default function QuizDashboard() {
   return (
     <div className="page">
       <h1>Quiz Dashboard</h1>
+      <p>Press the row to edit the quiz.</p>
       <table>
         <thead>
           <tr>
             <th>Question</th>
             <th>Quiz Created</th>
             <th>Quiz Creator</th>
-            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -188,9 +205,9 @@ export default function QuizDashboard() {
           ))}
         </tbody>
       </table>
-      <div className="create-btn-wrap">
+      <div className="end-btn-wrap">
         <Button
-          className="create"
+          className="default"
           text="Create Quiz"
           onClick={() => setModalOpen(true)}
         />
@@ -213,6 +230,7 @@ export default function QuizDashboard() {
               maxLength: { value: 100, message: "Max length is 100" },
             }}
             aria-invalid={errors.question ? "true" : "false"}
+            maxLength={100}
           />
           <div className="label-input">
             <div>Choices</div>
@@ -234,6 +252,7 @@ export default function QuizDashboard() {
                   required: "Enter the choice content",
                   maxLength: { value: 100, message: "Max length is 100" },
                 })}
+                maxLength={100}
               />
             </div>
             <div className="choice">
@@ -254,6 +273,7 @@ export default function QuizDashboard() {
                   required: "Enter the choice content",
                   maxLength: { value: 100, message: "Max length is 100" },
                 })}
+                maxLength={100}
               />
             </div>
             <div className="choice">
@@ -274,6 +294,7 @@ export default function QuizDashboard() {
                   required: "Enter the choice content",
                   maxLength: { value: 100, message: "Max length is 100" },
                 })}
+                maxLength={100}
               />
             </div>
             <div className="choice">
@@ -294,6 +315,7 @@ export default function QuizDashboard() {
                   required: "Enter the choice content",
                   maxLength: { value: 100, message: "Max length is 100" },
                 })}
+                maxLength={100}
               />
             </div>
           </div>
